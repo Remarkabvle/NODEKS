@@ -5,7 +5,7 @@ export const adminMiddleware = (req, res, next)=>{
         next()
     }else{
         res.status(403).json({
-            msg:"Access denied.",
+            msg:"Access denied.",  
             variant: "error",
             payload: null,
         })

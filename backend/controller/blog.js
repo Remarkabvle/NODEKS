@@ -1,9 +1,9 @@
-import { Blog, validateBlogData } from "../models/blogModel.js";
+import { Articles, validateArticle } from 'C:/Users/abuba/Desktop/Finweet-Project/NewFolder/backend/models/blogSchema.js';
 
 class BlogController {
   async fetchAll(req, res) {
     try {
-      const allBlogs = await Blog.find()
+      const allBlogs = await Articles.find()
         .populate([{ path: "userId", select: ["firstName", "userAlias"] }])
         .sort({ createdAt: -1 });
 
@@ -31,7 +31,7 @@ class BlogController {
 
   async createBlog(req, res) {
     try {
-      const { error } = validateBlogData(req.body);
+      const { error } = validateArticle(req.body);
       if (error) {
         return res.status(400).json({
           message: error.details[0].message,
@@ -40,7 +40,10 @@ class BlogController {
         });
       }
 
-      const newBlog = await Blog.create({ ...req.body, userId: req.user._id });
+      const newBlog = await Articles.create({
+        ...req.body,
+        userId: req.user._id,
+      });
       res.status(201).json({
         message: "Blog created successfully",
         status: "success",
@@ -58,7 +61,7 @@ class BlogController {
   async removeBlog(req, res) {
     try {
       const { id } = req.params;
-      await Blog.findByIdAndDelete(id);
+      await Articles.findByIdAndDelete(id);
 
       res.status(200).json({
         message: "Blog deleted successfully",
@@ -77,7 +80,9 @@ class BlogController {
   async modifyBlog(req, res) {
     try {
       const { id } = req.params;
-      const updatedBlog = await Blog.findByIdAndUpdate(id, req.body, { new: true });
+      const updatedBlog = await Articles.findByIdAndUpdate(id, req.body, {
+        new: true,
+      });
 
       res.status(200).json({
         message: "Blog updated successfully",
